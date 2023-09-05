@@ -12,6 +12,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
+
 @Path("/workspace-availability")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -22,6 +24,7 @@ public class WorkspaceAvailabilityController {
 
     @GET
     @Path("/{date}")
+    @Operation(summary = "Get availability by date", description = "Returns a list of availability of a certain date")
     public Response getAvailabilityByDate(@PathParam("date") String date) {
         WorkspaceAvailability availability = availabilityService.getAvailabilityByDate(date);
 
@@ -33,6 +36,7 @@ public class WorkspaceAvailabilityController {
     }
 
     @GET
+    @Operation(summary = "Get all availabilities", description = "Endpoint to get all availabilities of a coworking space")
     public Response getAllAvailabilities() {
         List<WorkspaceAvailability> availabilities = availabilityService.getAllAvailabilities();
 
@@ -45,6 +49,7 @@ public class WorkspaceAvailabilityController {
 
     @POST
     @RolesAllowed("admin")
+    @Operation(summary = "Create availability", description = "Endpoint to create availabilities, only admins have access to it")
     public Response createAvailability(WorkspaceAvailability newAvailability) {
         WorkspaceAvailability createdAvailability = availabilityService.createAvailability(newAvailability);
         if (createdAvailability != null) {
@@ -57,6 +62,7 @@ public class WorkspaceAvailabilityController {
     @PUT
     @Path("/{date}")
     @RolesAllowed("admin")
+    @Operation(summary = "Update availability", description = "Endpoint to update availability, only admins have acces to it")
     public Response updateAvailabilityByDate(
             @PathParam("date") String date,
             WorkspaceAvailability updatedAvailability) {

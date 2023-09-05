@@ -63,19 +63,19 @@ public class UserService {
         }
     }
 
-        public String loginAppUser(String email, String password){
+    public String loginAppUser(String email, String password) {
         var query = entityManager.createQuery("FROM AppUser WHERE email = :email", AppUser.class);
         query.setParameter("email", email);
         AppUser user = query.getSingleResult();
-        if (user.getPassword().equals(password)){
-            Set<String>groups= new HashSet<>();
-            if (user.isAdmin()){
+        if (user.getPassword().equals(password)) {
+            Set<String> groups = new HashSet<>();
+            if (user.isAdmin()) {
                 groups.add("admin");
-            }
-            else{
+            } else {
                 groups.add("member");
             }
-            return Jwt.upn(email).groups(groups).claim("user_id", user.getUser_id()).expiresIn(Duration.ofHours(24)).sign();
+            return Jwt.upn(email).groups(groups).claim("user_id", user.getUser_id()).expiresIn(Duration.ofHours(24))
+                    .sign();
         }
         return null;
 

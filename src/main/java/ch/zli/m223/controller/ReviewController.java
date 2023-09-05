@@ -8,6 +8,9 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.eclipse.microprofile.openapi.annotations.Operation;
+
 import java.util.List;
 
 @Path("/reviews")
@@ -19,6 +22,7 @@ public class ReviewController {
     ReviewService reviewService;
 
     @GET
+    @Operation(summary = "Get all reviews", description = "Get all reviews of de coworking space, everyone has access to it")
     public Response getAllReviews() {
         List<Review> reviews = reviewService.getAllReviews();
 
@@ -30,7 +34,8 @@ public class ReviewController {
     }
 
     @POST
-    @RolesAllowed({"admin", "member"})
+    @RolesAllowed({ "admin", "member" })
+    @Operation(summary = "Create a Review", description = "Endpoint to create a review of the coworking space")
     public Response createReview(Review newReview) {
         Review createdReview = reviewService.createReview(newReview);
         if (createdReview != null) {
@@ -43,6 +48,7 @@ public class ReviewController {
     @DELETE
     @RolesAllowed("admin")
     @Path("/{reviewId}")
+    @Operation(summary = "Delete a review", description = "Endpoint to delete a review of the coworking space, only admins have access to it")
     public Response deleteReview(@PathParam("reviewId") Long reviewId) {
         reviewService.deleteReview(reviewId);
         return Response.status(Response.Status.NO_CONTENT).build();
