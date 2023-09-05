@@ -44,6 +44,7 @@ public class WorkspaceAvailabilityController {
     }
 
     @POST
+    @RolesAllowed("admin")
     public Response createAvailability(WorkspaceAvailability newAvailability) {
         WorkspaceAvailability createdAvailability = availabilityService.createAvailability(newAvailability);
         if (createdAvailability != null) {

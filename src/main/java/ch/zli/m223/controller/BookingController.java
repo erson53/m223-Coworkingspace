@@ -5,6 +5,7 @@ import ch.zli.m223.model.Booking;
 import ch.zli.m223.service.BookingService;
 import ch.zli.m223.service.UserService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -24,6 +25,7 @@ public class BookingController {
     UserService userService;
 
     @POST
+    @RolesAllowed({"admin", "member"})
     public Response createBooking(@Valid Booking newBooking) {
         AppUser user = userService.getUserById(newBooking.getUser().getUser_id());
         newBooking.setUser(user);
@@ -38,11 +40,13 @@ public class BookingController {
     }
 
     @GET
+    @RolesAllowed("admin")
     public List<Booking> getAllBookings() {
         return bookingService.getAllBookings();
     }
 
     @DELETE
+    @RolesAllowed("admin")
     @Path("/{bookingId}")
     public Response deleteBooking(@PathParam("bookingId") Long bookingId) {
         boolean deleted = bookingService.deleteBooking(bookingId);
@@ -54,12 +58,14 @@ public class BookingController {
     }
 
     @GET
+    @RolesAllowed("admin")
     @Path("/booking-requests")
     public List<Booking> getPendingBookingRequests() {
         return bookingService.getBookingsByStatus("pending");
     }
 
     @PUT
+    @RolesAllowed("admin")
     @Path("/booking-requests/{bookingId}")
     public Response updateBookingRequestStatus(
             @PathParam("bookingId") Long bookingId,

@@ -1,14 +1,17 @@
 package ch.zli.m223.service;
 
 import ch.zli.m223.model.AppUser;
+import io.smallrye.jwt.build.Jwt;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+
+import java.time.Duration;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 @ApplicationScoped
 public class UserService {
@@ -60,10 +63,21 @@ public class UserService {
         }
     }
 
-    public Optional<AppUser> findByEmail(String email) {
-        TypedQuery<AppUser> query = entityManager.createQuery(
-                "SELECT u FROM AppUser u WHERE u.email = :email", AppUser.class);
+        public String loginAppUser(String email, String password){
+        var query = entityManager.createQuery("FROM AppUser WHERE email = :email", AppUser.class);
         query.setParameter("email", email);
-        return query.getResultStream().findFirst();
+        AppUser user = query.getSingleResult();
+        if (user.getPassword().equals(password)){
+            Set<String>groups= new HashSet<>();
+            if (user.isAdmin()){
+                groups.add("admin");
+            }
+            else{
+                groups.add("member");
+            }
+            return Jwt.upn(email).groups(groups).claim("user_id", user.getUser_id()).expiresIn(Duration.ofHours(24)).sign();
+        }
+        return null;
+
     }
 }

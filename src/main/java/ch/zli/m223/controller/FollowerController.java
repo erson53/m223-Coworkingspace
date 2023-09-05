@@ -7,6 +7,7 @@ import ch.zli.m223.service.FollowerService;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -25,6 +26,7 @@ public class FollowerController {
 
     @POST
     @Path("/{followerId}/follow/{followedId}")
+    @RolesAllowed({"admin", "member"})
     public Response followUser(
             @PathParam("followerId") Long followerId,
             @PathParam("followedId") Long followedId) {
@@ -42,6 +44,7 @@ public class FollowerController {
 
     @POST
     @Path("/{followerId}/unfollow/{followedId}")
+    @RolesAllowed({"admin", "member"})
     public Response unfollowUser(
             @PathParam("followerId") Long followerId,
             @PathParam("followedId") Long followedId) {
@@ -59,6 +62,7 @@ public class FollowerController {
 
     @GET
     @Path("/{userId}")
+    @RolesAllowed({"admin", "member"})
     public Response getFollowersForUser(@PathParam("userId") Long userId) {
         List<Follower> followers = followerService.getFollowersForUser(userId);
 

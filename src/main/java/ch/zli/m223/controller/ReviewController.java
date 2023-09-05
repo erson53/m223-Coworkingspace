@@ -3,6 +3,7 @@ package ch.zli.m223.controller;
 import ch.zli.m223.model.Review;
 import ch.zli.m223.service.ReviewService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -29,6 +30,7 @@ public class ReviewController {
     }
 
     @POST
+    @RolesAllowed({"admin", "member"})
     public Response createReview(Review newReview) {
         Review createdReview = reviewService.createReview(newReview);
         if (createdReview != null) {
@@ -39,6 +41,7 @@ public class ReviewController {
     }
 
     @DELETE
+    @RolesAllowed("admin")
     @Path("/{reviewId}")
     public Response deleteReview(@PathParam("reviewId") Long reviewId) {
         reviewService.deleteReview(reviewId);
