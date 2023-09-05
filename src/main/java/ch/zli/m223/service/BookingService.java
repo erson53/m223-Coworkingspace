@@ -5,6 +5,7 @@ import ch.zli.m223.model.Booking;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -37,6 +38,25 @@ public class BookingService {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public List<Booking> getBookingsByStatus(String status) {
+        TypedQuery<Booking> query = entityManager.createQuery(
+                "SELECT b FROM Booking b WHERE b.status = :status", Booking.class);
+        query.setParameter("status", status);
+        return query.getResultList();
+    }
+
+    @Transactional
+    public Booking updateBookingStatus(Long bookingId, String newStatus) {
+        Booking bookingToUpdate = entityManager.find(Booking.class, bookingId);
+
+        if (bookingToUpdate != null) {
+            bookingToUpdate.setStatus(newStatus);
+            return entityManager.merge(bookingToUpdate);
+        } else {
+            return null;
         }
     }
 }

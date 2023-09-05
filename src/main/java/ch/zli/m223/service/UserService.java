@@ -5,8 +5,10 @@ import ch.zli.m223.model.AppUser;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class UserService {
@@ -56,5 +58,12 @@ public class UserService {
         } else {
             return null;
         }
+    }
+
+    public Optional<AppUser> findByEmail(String email) {
+        TypedQuery<AppUser> query = entityManager.createQuery(
+                "SELECT u FROM AppUser u WHERE u.email = :email", AppUser.class);
+        query.setParameter("email", email);
+        return query.getResultStream().findFirst();
     }
 }

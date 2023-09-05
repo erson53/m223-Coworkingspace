@@ -52,4 +52,25 @@ public class BookingController {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
+
+    @GET
+    @Path("/booking-requests")
+    public List<Booking> getPendingBookingRequests() {
+        return bookingService.getBookingsByStatus("pending");
+    }
+
+    @PUT
+    @Path("/booking-requests/{bookingId}")
+    public Response updateBookingRequestStatus(
+            @PathParam("bookingId") Long bookingId,
+            @QueryParam("status") String newStatus) {
+
+        Booking updatedBooking = bookingService.updateBookingStatus(bookingId, newStatus);
+
+        if (updatedBooking != null) {
+            return Response.status(Response.Status.OK).entity(updatedBooking).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
 }
